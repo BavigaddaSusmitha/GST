@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GST Invoice Calculator — Free Online Tool</title>
+<meta name="description" content="Calculate GST, generate professional invoices with CGST/SGST/IGST breakdown. Free, instant, no signup." />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+--bg: #f7f8fa;
+--card: #ffffff;
+--border: #e2e4ea;
+--border-strong: #c8cad4;
+--text: #1a1d26;
+--text-muted: #6b7080;
+--text-light: #9ca3af;
+--accent: #2563eb;
+--accent-light: #eff4ff;
+--accent-dark: #1d4ed8;
+--success: #16a34a;
+--success-light: #f0fdf4;
+--warn: #d97706;
+--warn-light: #fffbeb;
+--shadow: 0 1px 4px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
+--radius: 10px;
+--radius-sm: 6px;
+}
+body {
+font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+background: var(--bg);
+color: var(--text);
+line-height: 1.6;
+min-height: 100vh;
+}
+.topbar {
+background: var(--card);
+border-bottom: 1px solid var(--border);
+padding: 0 1.5rem;
+display: flex;
+align-items: center;
+justify-content: space-between;
+height: 56px;
+position: sticky;
+top: 0;
+z-index: 100;
+}
+.logo { font-size: 1.1rem; font-weight: 700; color: var(--accent); letter-spacing: -0.01em; }
+.logo span { color: var(--text-muted); font-weight: 400; }
+.dh-btn {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: var(--accent);
+color: #fff;
+font-size: 0.8rem;
+font-weight: 600;
+padding: 7px 14px;
+border-radius: 20px;
+text-decoration: none;
+transition: background 0.15s;
+white-space: nowrap;
+}
+.dh-btn:hover { background: var(--accent-dark); }
+.dh-btn svg { flex-shrink: 0; }
+.hero {
+text-align: center;
+padding: 3rem 1.5rem 2rem;
+}
+.hero h1 {
+font-size: clamp(1.7rem, 4vw, 2.5rem);
+font-weight: 800;
+letter-spacing: -0.03em;
+line-height: 1.15;
+color: var(--text);
+}
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero p {
+margin-top: 0.6rem;
+color: var(--text-muted);
+font-size: 1rem;
+max-width: 480px;
+margin-left: auto;
+margin-right: auto;
+}
+.badges {
+display: flex;
+gap: 8px;
+justify-content: center;
+flex-wrap: wrap;
+margin-top: 1rem;
+}
+.badge {
+background: var(--accent-light);
+color: var(--accent);
+font-size: 0.75rem;
+font-weight: 600;
+padding: 4px 12px;
+border-radius: 20px;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 0 1.25rem 4rem; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 660px) { .grid { grid-template-columns: 1fr; } }
+.card {
+background: var(--card);
+border: 1px solid var(--border);
+border-radius: var(--radius);
+padding: 1.5rem;
+box-shadow: var(--shadow);
+}
+.card-title {
+font-size: 0.8rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+color: var(--text-muted);
+margin-bottom: 1.25rem;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.card-title svg { color: var(--accent); }
+.field { margin-bottom: 1rem; }
+.field:last-child { margin-bottom: 0; }
+label {
+display: block;
+font-size: 0.8rem;
+font-weight: 600;
+color: var(--text-muted);
+margin-bottom: 5px;
+}
+input[type="text"],
+input[type="number"],
+input[type="email"],
+select,
+textarea {
+width: 100%;
+padding: 9px 12px;
+border: 1px solid var(--border-strong);
+border-radius: var(--radius-sm);
+font-size: 0.9rem;
+color: var(--text);
+background: #fff;
+transition: border 0.15s, box-shadow 0.15s;
+outline: none;
+font-family: inherit;
+}
+input:focus, select:focus, textarea:focus {
+border-color: var(--accent);
+box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+textarea { resize: vertical; min-height: 70px; }
+select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7080' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 32px; }
+.items-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+thead th {
+background: var(--bg);
+color: var(--text-muted);
+font-size: 0.72rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.06em;
+padding: 8px 10px;
+text-align: left;
+border-bottom: 1px solid var(--border);
+}
+thead th:last-child { text-align: center; }
+tbody td {
+padding: 6px 6px;
+border-bottom: 1px solid var(--border);
+vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody input[type="text"],
+tbody input[type="number"] {
+padding: 6px 8px;
+font-size: 0.83rem;
+border-color: transparent;
+background: transparent;
+}
+tbody input:focus {
+background: #fff;
+border-color: var(--accent);
+}
+.del-btn {
+background: none;
+border: none;
+cursor: pointer;
+color: var(--text-light);
+display: flex;
+align-items: center;
+justify-content: center;
+width: 28px;
+height: 28px;
+border-radius: 6px;
+margin: auto;
+transition: background 0.1s, color 0.1s;
+}
+.del-btn:hover { background: #fee2e2; color: #dc2626; }
+.add-row-btn {
+display: inline-flex;
+align-items: center;
+gap: 5px;
+margin-top: 10px;
+font-size: 0.82rem;
+font-weight: 600;
+color: var(--accent);
+background: none;
+border: 1px dashed var(--accent);
+padding: 6px 14px;
+border-radius: 20px;
+cursor: pointer;
+transition: background 0.1s;
+}
+.add-row-btn:hover { background: var(--accent-light); }
+.gst-toggle {
+display: flex;
+gap: 6px;
+flex-wrap: wrap;
+margin-bottom: 1rem;
+}
+.gst-opt { display: none; }
+.gst-label {
+padding: 7px 16px;
+border: 1px solid var(--border-strong);
+border-radius: 20px;
+cursor: pointer;
+font-size: 0.83rem;
+font-weight: 600;
+color: var(--text-muted);
+transition: all 0.12s;
+user-select: none;
+}
+.gst-opt:checked + .gst-label {
+background: var(--accent);
+color: #fff;
+border-color: var(--accent);
+}
+.summary-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 8px 0;
+border-bottom: 1px solid var(--border);
+font-size: 0.88rem;
+}
+.summary-row:last-child { border-bottom: none; }
+.summary-row.total {
+font-size: 1.1rem;
+font-weight: 800;
+color: var(--text);
+border-top: 2px solid var(--text);
+margin-top: 6px;
+padding-top: 10px;
+border-bottom: none;
+}
+.summary-row .key { color: var(--text-muted); }
+.summary-row .val { font-weight: 600; }
+.summary-row.gst-row .val { color: var(--warn); }
+.summary-row.total .val { color: var(--accent); }
+.actions {
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
+margin-top: 1.5rem;
+}
+.btn {
+display: inline-flex;
+align-items: center;
+gap: 7px;
+padding: 10px 20px;
+border-radius: var(--radius-sm);
+font-size: 0.88rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.12s;
+border: 1px solid transparent;
+font-family: inherit;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-outline { background: #fff; color: var(--text); border-color: var(--border-strong); }
+.btn-outline:hover { background: var(--bg); }
+#preview-wrap { display: none; margin-top: 1.5rem; }
+.invoice-preview {
+background: #fff;
+border: 1px solid var(--border);
+border-radius: var(--radius);
+padding: 2.5rem;
+font-size: 0.88rem;
+box-shadow: var(--shadow);
+}
+@media print {
+body > *:not(#print-target) { display: none !important; }
+#print-target { display: block !important; }
+.invoice-preview { box-shadow: none; border: none; padding: 0; }
+}
+.inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+.inv-title { font-size: 2rem; font-weight: 900; letter-spacing: -0.04em; color: var(--accent); }
+.inv-meta { text-align: right; font-size: 0.82rem; color: var(--text-muted); }
+.inv-meta strong { color: var(--text); font-size: 0.9rem; }
+.inv-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+.inv-party h4 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 6px; }
+.inv-party p { font-size: 0.87rem; line-height: 1.6; }
+.inv-party strong { font-size: 1rem; color: var(--text); }
+.inv-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+.inv-table th { background: var(--text); color: #fff; padding: 8px 12px; text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.inv-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+.inv-table tr:last-child td { border-bottom: none; }
+.inv-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.inv-totals { display: grid; grid-template-columns: 1fr 240px; gap: 2rem; }
+.inv-sum-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.84rem; border-bottom: 1px solid var(--border); }
+.inv-sum-row:last-child { border-bottom: none; }
+.inv-sum-row.grand { font-weight: 800; font-size: 1rem; border-top: 2px solid var(--text); margin-top: 4px; padding-top: 8px; color: var(--accent); }
+.inv-note { font-size: 0.8rem; color: var(--text-muted); }
+.inv-note strong { color: var(--text); }
+.inv-footer { margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem; font-size: 0.78rem; color: var(--text-light); display: flex; justify-content: space-between; }
+.gstin-badge { display: inline-block; background: var(--success-light); color: var(--success); font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 4px; }
+footer {
+background: var(--card);
+border-top: 1px solid var(--border);
+padding: 1.5rem;
+text-align: center;
+font-size: 0.82rem;
+color: var(--text-muted);
+}
+footer strong { color: var(--text); }
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.author-strip {
+background: var(--accent-light);
+border: 1px solid #bfdbfe;
+border-radius: var(--radius-sm);
+padding: 10px 16px;
+margin-bottom: 1.25rem;
+font-size: 0.82rem;
+color: var(--text-muted);
+display: flex;
+align-items: center;
+gap: 8px;
+flex-wrap: wrap;
+}
+.author-strip strong { color: var(--text); }
+.author-strip a { color: var(--accent); }
+.dot { color: var(--border-strong); }
+</style>
+</head>
+<body>
+<nav class="topbar">
+<div class="logo">GST<span>Invoice</span></div>
+<a class="dh-btn" href="https://digitalheroesco.com" target="_blank" rel="noopener">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+Built for Digital Heroes
+</a>
+</nav>
+<header class="hero">
+<h1>Free <em>GST Invoice</em> Calculator</h1>
+<p>Add items, pick your GST slab, generate a professional invoice — instantly. No login, no watermark, no cost.</p>
+<div class="badges">
+<span class="badge">✓ CGST / SGST / IGST</span>
+<span class="badge">✓ Multiple GST slabs</span>
+<span class="badge">✓ Print-ready invoice</span>
+<span class="badge">✓ 100% Free</span>
+</div>
+</header>
+<main class="container">
+<div class="author-strip">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+Built by <strong>Bavigadda Susmitha</strong> <span class="dot">·</span> <a href="mailto:bavigaddasusmitha999@gmail.com">bavigaddasusmitha999@gmail.com</a>
+<span class="dot">·</span> Trial submission for Digital Heroes
+</div>
+<div class="grid">
+<div>
+<div class="card" style="margin-bottom:1.25rem">
+<div class="card-title">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+Invoice Details
+</div>
+<div class="field"><label>Invoice Number</label><input type="text" id="inv-no" value="INV-001" /></div>
+<div class="field"><label>Invoice Date</label><input type="text" id="inv-date" /></div>
+<div class="field"><label>Due Date (optional)</label><input type="text" id="due-date" /></div>
+</div>
+<div class="card" style="margin-bottom:1.25rem">
+<div class="card-title">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+From (Your Business)
+</div>
+<div class="field"><label>Business Name</label><input type="text" id="from-name" placeholder="Acme Pvt. Ltd." /></div>
+<div class="field"><label>GSTIN</label><input type="text" id="from-gstin" placeholder="22AAAAA0000A1Z5" maxlength="15" style="text-transform:uppercase" /></div>
+<div class="field"><label>Address</label><textarea id="from-addr" placeholder="123 MG Road, Bengaluru – 560001"></textarea></div>
+<div class="field"><label>Email / Phone</label><input type="text" id="from-contact" placeholder="hello@acme.com · +91 98765 43210" /></div>
+</div>
+<div class="card">
+<div class="card-title">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+To (Client)
+</div>
+<div class="field"><label>Client Name</label><input type="text" id="to-name" placeholder="Client Company Ltd." /></div>
+<div class="field"><label>Client GSTIN (optional)</label><input type="text" id="to-gstin" placeholder="27BBBBB1111B1ZK" maxlength="15" style="text-transform:uppercase" /></div>
+<div class="field"><label>Address</label><textarea id="to-addr" placeholder="456 Park Street, Mumbai – 400001"></textarea></div>
+</div>
+</div>
+<div>
+<div class="card" style="margin-bottom:1.25rem">
+<div class="card-title">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+Line Items
+</div>
+<div class="items-wrap">
+<table id="items-table">
+<thead>
+<tr>
+<th style="min-width:130px">Description</th>
+<th style="width:50px">Qty</th>
+<th style="width:90px">Rate (₹)</th>
+<th style="width:75px">Amount</th>
+<th style="width:36px"></th>
+</tr>
+</thead>
+<tbody id="items-body"></tbody>
+</table>
+</div>
+<button class="add-row-btn" onclick="addRow()">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+Add item
+</button>
+</div>
+<div class="card" style="margin-bottom:1.25rem">
+<div class="card-title">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+GST Settings
+</div>
+<label style="margin-bottom:8px">GST Type</label>
+<div class="gst-toggle">
+<input type="radio" name="gst-type" id="g-intra" value="intra" class="gst-opt" checked />
+<label class="gst-label" for="g-intra">Intra-state (CGST+SGST)</label>
+<input type="radio" name="gst-type" id="g-inter" value="inter" class="gst-opt" />
+<label class="gst-label" for="g-inter">Inter-state (IGST)</label>
+<input type="radio" name="gst-type" id="g-nil" value="nil" class="gst-opt" />
+<label class="gst-label" for="g-nil">Nil / Exempt</label>
+</div>
+<label style="margin-bottom:8px">GST Rate</label>
+<select id="gst-rate" onchange="calc()">
+<option value="0">0%</option>
+<option value="0.1">0.1%</option>
+<option value="0.25">0.25%</option>
+<option value="3">3%</option>
+<option value="5">5%</option>
+<option value="12" selected>12%</option>
+<option value="18">18%</option>
+<option value="28">28%</option>
+</select>
+<div class="field" style="margin-top:1rem"><label>Discount (₹)</label><input type="number" id="discount" value="0" min="0" onchange="calc()" /></div>
+<div class="field"><label>Notes / Payment Terms</label><textarea id="notes" placeholder="Payment due within 30 days. Thank you!"></textarea></div>
+</div>
+<div class="card" id="summary-card">
+<div class="card-title">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+Summary
+</div>
+<div class="summary-row"><span class="key">Subtotal</span><span class="val" id="s-sub">₹0.00</span></div>
+<div class="summary-row"><span class="key">Discount</span><span class="val" id="s-disc">– ₹0.00</span></div>
+<div class="summary-row gst-row" id="s-cgst-row"><span class="key">CGST (<span id="s-cgst-pct">6%</span>)</span><span class="val" id="s-cgst">₹0.00</span></div>
+<div class="summary-row gst-row" id="s-sgst-row"><span class="key">SGST (<span id="s-sgst-pct">6%</span>)</span><span class="val" id="s-sgst">₹0.00</span></div>
+<div class="summary-row gst-row" id="s-igst-row" style="display:none"><span class="key">IGST (<span id="s-igst-pct">12%</span>)</span><span class="val" id="s-igst">₹0.00</span></div>
+<div class="summary-row total"><span>Total Payable</span><span class="val" id="s-total">₹0.00</span></div>
+</div>
+<div class="actions">
+<button class="btn btn-primary" onclick="generateInvoice()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+Generate Invoice
+</button>
+<button class="btn btn-outline" onclick="resetAll()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+Reset
+</button>
+</div>
+</div>
+</div>
+<div id="preview-wrap">
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; flex-wrap:wrap; gap:10px;">
+<h2 style="font-size:1rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em">Invoice Preview</h2>
+<div style="display:flex;gap:8px">
+<button class="btn btn-outline" onclick="window.print()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+Print / Save PDF
+</button>
+<button class="btn btn-outline" onclick="copyText()">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+Copy Summary
+</button>
+</div>
+</div>
+<div class="invoice-preview" id="invoice-preview"></div>
+</div>
+</main>
+<footer>
+Built by <strong>Bavigadda Susmitha</strong> · <a href="mailto:bavigaddasusmitha999@gmail.com">bavigaddasusmitha999@gmail.com</a>
+&nbsp;·&nbsp;
+<a class="dh-btn" href="https://digitalheroesco.com" target="_blank" rel="noopener" style="display:inline-flex;font-size:0.78rem;padding:5px 12px;">
+<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+Built for Digital Heroes
+</a>
+&nbsp;·&nbsp; Free tool — no login, no watermark
+</footer>
+<script>
+let rows = [];
+let rowId = 0;
+function fmt(n) {
+return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function today() {
+const d = new Date();
+return d.getDate().toString().padStart(2,'0') + '/' + (d.getMonth()+1).toString().padStart(2,'0') + '/' + d.getFullYear();
+}
+function dueDate() {
+const d = new Date();
+d.setDate(d.getDate() + 30);
+return d.getDate().toString().padStart(2,'0') + '/' + (d.getMonth()+1).toString().padStart(2,'0') + '/' + d.getFullYear();
+}
+function addRow(desc='', qty=1, rate=0) {
+const id = ++rowId;
+rows.push({ id, desc, qty, rate });
+renderRows();
+calc();
+}
+function deleteRow(id) {
+rows = rows.filter(r => r.id !== id);
+renderRows();
+calc();
+}
+function updateRow(id, field, val) {
+const r = rows.find(r => r.id === id);
+if (!r) return;
+if (field === 'qty' || field === 'rate') r[field] = parseFloat(val) || 0;
+else r[field] = val;
+calc();
+const amtEl = document.getElementById('amt-' + id);
+if (amtEl) amtEl.textContent = fmt(r.qty * r.rate);
+}
+function renderRows() {
+const tbody = document.getElementById('items-body');
+tbody.innerHTML = '';
+rows.forEach(r => {
+const tr = document.createElement('tr');
+tr.innerHTML = `
+<td><input type="text" value="${r.desc}" placeholder="Item description" onchange="updateRow(${r.id},'desc',this.value)" /></td>
+<td><input type="number" value="${r.qty}" min="0" step="any" onchange="updateRow(${r.id},'qty',this.value)" /></td>
+<td><input type="number" value="${r.rate}" min="0" step="any" onchange="updateRow(${r.id},'rate',this.value)" /></td>
+<td id="amt-${r.id}" style="font-variant-numeric:tabular-nums;font-size:.83rem;color:var(--text-muted);padding:6px 10px;">${fmt(r.qty * r.rate)}</td>
+<td><button class="del-btn" onclick="deleteRow(${r.id})" title="Remove row">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+</button></td>`;
+tbody.appendChild(tr);
+});
+}
+function getGstType() {
+return document.querySelector('input[name="gst-type"]:checked').value;
+}
+function calc() {
+const subtotal = rows.reduce((s, r) => s + r.qty * r.rate, 0);
+const discount = Math.max(0, parseFloat(document.getElementById('discount').value) || 0);
+const taxable = Math.max(0, subtotal - discount);
+const rate = parseFloat(document.getElementById('gst-rate').value) || 0;
+const type = getGstType();
+let cgst = 0, sgst = 0, igst = 0;
+if (type === 'intra') { cgst = taxable * (rate / 2) / 100; sgst = cgst; }
+else if (type === 'inter') { igst = taxable * rate / 100; }
+const total = taxable + cgst + sgst + igst;
+document.getElementById('s-sub').textContent = fmt(subtotal);
+document.getElementById('s-disc').textContent = '– ' + fmt(discount);
+document.getElementById('s-cgst-pct').textContent = (rate/2) + '%';
+document.getElementById('s-sgst-pct').textContent = (rate/2) + '%';
+document.getElementById('s-igst-pct').textContent = rate + '%';
+document.getElementById('s-cgst').textContent = fmt(cgst);
+document.getElementById('s-sgst').textContent = fmt(sgst);
+document.getElementById('s-igst').textContent = fmt(igst);
+document.getElementById('s-total').textContent = fmt(total);
+document.getElementById('s-cgst-row').style.display = (type==='intra') ? '' : 'none';
+document.getElementById('s-sgst-row').style.display = (type==='intra') ? '' : 'none';
+document.getElementById('s-igst-row').style.display = (type==='inter') ? '' : 'none';
+return { subtotal, discount, taxable, cgst, sgst, igst, rate, type, total };
+}
+function generateInvoice() {
+const d = calc();
+const invNo = document.getElementById('inv-no').value || 'INV-001';
+const invDate = document.getElementById('inv-date').value || today();
+const dueD = document.getElementById('due-date').value || '';
+const fromName = document.getElementById('from-name').value || 'Your Business';
+const fromGst = document.getElementById('from-gstin').value.toUpperCase();
+const fromAddr = document.getElementById('from-addr').value.replace(/\n/g,'<br/>');
+const fromContact = document.getElementById('from-contact').value;
+const toName = document.getElementById('to-name').value || 'Client';
+const toGst = document.getElementById('to-gstin').value.toUpperCase();
+const toAddr = document.getElementById('to-addr').value.replace(/\n/g,'<br/>');
+const notes = document.getElementById('notes').value;
+let rows_html = '';
+rows.forEach((r, i) => {
+rows_html += `<tr>
+<td>${i+1}</td>
+<td>${r.desc || '—'}</td>
+<td class="num">${r.qty}</td>
+<td class="num">${fmt(r.rate)}</td>
+<td class="num">${fmt(r.qty * r.rate)}</td>
+</tr>`;
+});
+let gstRows = '';
+if (d.type === 'intra') {
+gstRows = `<div class="inv-sum-row"><span>CGST @ ${d.rate/2}%</span><span>${fmt(d.cgst)}</span></div>
+<div class="inv-sum-row"><span>SGST @ ${d.rate/2}%</span><span>${fmt(d.sgst)}</span></div>`;
+} else if (d.type === 'inter') {
+gstRows = `<div class="inv-sum-row"><span>IGST @ ${d.rate}%</span><span>${fmt(d.igst)}</span></div>`;
+} else {
+gstRows = `<div class="inv-sum-row"><span>GST</span><span>Nil / Exempt</span></div>`;
+}
+const html = `
+<div class="inv-header">
+<div>
+<div class="inv-title">INVOICE</div>
+<div style="font-size:.82rem;color:var(--text-muted);margin-top:4px;"># ${invNo}</div>
+</div>
+<div class="inv-meta">
+<div><strong>${fromName}</strong></div>
+<div>${fromAddr}</div>
+${fromContact ? `<div>${fromContact}</div>` : ''}
+${fromGst ? `<div class="gstin-badge">GSTIN: ${fromGst}</div>` : ''}
+</div>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--text-muted);margin-bottom:1.5rem;flex-wrap:wrap;gap:8px;">
+<div><strong style="color:var(--text)">Invoice Date:</strong> ${invDate}</div>
+${dueD ? `<div><strong style="color:var(--text)">Due Date:</strong> ${dueD}</div>` : ''}
+</div>
+<div class="inv-parties">
+<div class="inv-party">
+<h4>Billed From</h4>
+<p><strong>${fromName}</strong><br/>${fromAddr}${fromGst ? '<br/><span class="gstin-badge" style="margin-top:4px">GSTIN: '+fromGst+'</span>' : ''}</p>
+</div>
+<div class="inv-party">
+<h4>Billed To</h4>
+<p><strong>${toName}</strong><br/>${toAddr}${toGst ? '<br/><span class="gstin-badge" style="margin-top:4px">GSTIN: '+toGst+'</span>' : ''}</p>
+</div>
+</div>
+<table class="inv-table">
+<thead><tr><th>#</th><th>Description</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Amount</th></tr></thead>
+<tbody>${rows_html || '<tr><td colspan="5" style="text-align:center;color:var(--text-light);padding:1.5rem">No items added</td></tr>'}</tbody>
+</table>
+<div class="inv-totals">
+<div class="inv-note">
+${notes ? `<strong>Notes:</strong><br/>${notes.replace(/\n/g,'<br/>')}` : ''}
+</div>
+<div class="inv-totals-right">
+<div class="inv-sum-row"><span>Subtotal</span><span>${fmt(d.subtotal)}</span></div>
+${d.discount > 0 ? `<div class="inv-sum-row"><span>Discount</span><span style="color:var(--success)">– ${fmt(d.discount)}</span></div>` : ''}
+<div class="inv-sum-row"><span>Taxable Amount</span><span>${fmt(d.taxable)}</span></div>
+${gstRows}
+<div class="inv-sum-row grand"><span>Total</span><span>${fmt(d.total)}</span></div>
+</div>
+</div>
+<div class="inv-footer">
+<span>Generated by GST Invoice Calculator — free tool</span>
+<a href="https://digitalheroesco.com" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:600">★ Built for Digital Heroes</a>
+</div>`;
+document.getElementById('invoice-preview').innerHTML = html;
+const wrap = document.getElementById('preview-wrap');
+wrap.style.display = 'block';
+setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+}
+function copyText() {
+const d = calc();
+const type = d.type === 'intra' ? `CGST: ${fmt(d.cgst)} + SGST: ${fmt(d.sgst)}` :
+d.type === 'inter' ? `IGST: ${fmt(d.igst)}` : 'GST: Nil';
+const txt = `--- GST Invoice Summary ---
+Invoice: ${document.getElementById('inv-no').value}
+Date: ${document.getElementById('inv-date').value}
+From: ${document.getElementById('from-name').value}
+To: ${document.getElementById('to-name').value}
+---
+Subtotal: ${fmt(d.subtotal)}
+Discount: ${fmt(d.discount)}
+Taxable: ${fmt(d.taxable)}
+${type}
+Total: ${fmt(d.total)}`;
+navigator.clipboard.writeText(txt).then(() => {
+const btn = event.target.closest('button');
+const orig = btn.innerHTML;
+btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+setTimeout(() => btn.innerHTML = orig, 1800);
+});
+}
+function resetAll() {
+if (!confirm('Reset everything?')) return;
+rows = []; rowId = 0;
+renderRows(); calc();
+document.getElementById('preview-wrap').style.display = 'none';
+['from-name','from-gstin','from-addr','from-contact','to-name','to-gstin','to-addr','notes'].forEach(id => document.getElementById(id).value = '');
+document.getElementById('discount').value = '0';
+document.getElementById('inv-no').value = 'INV-001';
+document.getElementById('inv-date').value = today();
+document.getElementById('due-date').value = '';
+addRow('Web Design Services', 1, 15000);
+addRow('Hosting Setup', 1, 2500);
+}
+document.querySelectorAll('input[name="gst-type"]').forEach(el => el.addEventListener('change', calc));
+document.getElementById('gst-rate').addEventListener('change', calc);
+document.getElementById('discount').addEventListener('input', calc);
+document.getElementById('inv-date').value = today();
+document.getElementById('due-date').value = dueDate();
+addRow('Web Design Services', 1, 15000);
+addRow('Hosting Setup', 1, 2500);
+calc();
+</script>
+</body>
+</html>
+
